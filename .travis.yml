@@ -1,0 +1,39 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+  - 5.5
+
+env:
+  global:
+    - REPO_NAME=CakePdf
+    - PLUGIN_NAME=CakePdf
+    - REQUIRE="tecnick.com/tcpdf:6.0.031 mpdf/mpdf:v5.7.1 dompdf/dompdf:dev-master"
+
+  matrix:
+    - DB=mysql CAKE_VERSION=master
+    - DB=mysql CAKE_VERSION=2.5
+
+matrix:
+  include:
+    - php: 5.4
+      env:
+        - DB=mysql CAKE_VERSION=master COVERALLS=1
+    - php: 5.4
+      env:
+        - DB=mysql CAKE_VERSION=master PHPCS=1
+
+before_script:
+  - git clone -b master https://github.com/FriendsOfCake/travis.git --depth 1 ../travis
+  - sudo touch /usr/bin/wkhtmltopdf && sudo chmod +x /usr/bin/wkhtmltopdf
+  - ../travis/before_script.sh
+
+script:
+  - ../travis/script.sh
+
+after_success:
+  - ../travis/after_success.sh
+
+notifications:
+  email: false
